@@ -24,6 +24,9 @@ def upgrade():
         sa.Column('password', sa.String(255), nullable=False)
     )
 
+    op.create_index('user_idx_uq', 'user', ['username'], unique=True)
+
 
 def downgrade():
     op.drop_table('user')
+
