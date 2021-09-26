@@ -21,10 +21,12 @@ def upgrade():
         'user',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('username', sa.String(256), nullable=False),
-        sa.Column('password', sa.String(255), nullable=False)
+        sa.Column('password', sa.String(255), nullable=False),
+        sa.Column('api_key', sa.String(255), nullable=False)
     )
 
-    op.create_index('user_idx_uq', 'user', ['username'], unique=True)
+    op.create_index('user_username_idx_uq', 'user', ['username'], unique=True)
+    op.create_index('user_apikey_idx_uq', 'user', ['api_key'], unique=True)
 
 
 def downgrade():
