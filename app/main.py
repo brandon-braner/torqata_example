@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.authentication import AuthenticationMiddleware
 
 from app.config import settings
 from app.cors import get_cors_domains
@@ -14,25 +13,20 @@ def main():
 
 
 def configure(env: str):
-    configure_cors(env)
-    configure_middleware()
+    configure_middleware(env)
     configure_routes()
 
 
-def configure_cors(env: str):
+def configure_middleware(env: str):
+    # app.add_middleware(AuthenticationMiddleware, backend=AuthBackend())
     origins = get_cors_domains(env)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"],
+        allow_headers=["*"]
     )
-
-
-def configure_middleware():
-    from app.middleware.authentication_middleware import AuthBackend
-    app.add_middleware(AuthenticationMiddleware, backend=AuthBackend())
 
 
 def configure_db():

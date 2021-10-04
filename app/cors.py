@@ -10,3 +10,6 @@ def get_cors_domains(env: str) -> List:
             'http://app.released.local',
             'http://api.released.local'
         ]
+
+    if env == 'PROD':
+        return['*']

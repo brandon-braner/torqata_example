@@ -10,14 +10,7 @@ def postgres_engine():
     port = settings.postgres_port
     db_name = settings.postgres_db_name
 
-    if settings.app_env == 'PROD':
-        db_name = 'torqataexample'
-        socket_path = settings.socket_path
-        cloud_sql_instance_name = settings.cloud_sql_instance_name
-        connection_string = f"postgresql+psycopg2://{user}:{password}@/{db_name}?unix_socket={socket_path}/{cloud_sql_instance_name}"
-
-    else:
-        connection_string = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}"
+    connection_string = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}"
 
     return create_engine(connection_string)
 
