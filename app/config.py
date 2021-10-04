@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     postgres_port: int = os.environ.get("POSTGRES_PORT")
     postgres_db_name: str = os.environ.get("POSTGRES_DB_NAME")
 
+    # cloud sql
+    socket_path = "/cloudsql"
+    cloud_sql_instance_name = 'torqataexample:us-central1:torqataexample'
+
 
 @lru_cache()
 def get_settings():
