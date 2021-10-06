@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.modules.user.schemas.user_schemas import AuthSchema, RegistrationSchema
+from app.modules.user.schemas.user_schemas import AuthSchema, RegistrationSchema, LoginSchema
 from app.providers.providers import auth_provider
 from app.response_schemas import ErrorResponseSchema
 
@@ -37,7 +37,7 @@ async def register(request_body: OAuth2PasswordRequestForm = Depends()):
     responses={401: {'model': ErrorResponseSchema}},
 )
 async def login(request_body: OAuth2PasswordRequestForm = Depends()):
-    auth_response: RegistrationSchema = auth_provider.login(request_body.username, request_body.password)
+    auth_response: LoginSchema = auth_provider.login(request_body.username, request_body.password)
 
     if auth_response.error:
         return JSONResponse(

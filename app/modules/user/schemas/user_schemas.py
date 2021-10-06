@@ -23,3 +23,7 @@ class RegistrationSchema(BaseResponseSchema):
     refresh_token: Optional[str] = Field(description="Refresh token for oauth providers")
     user: UserSchema = Field(description="User data returned from auth provider.")
     message: Optional[str] = Field(description="message to return along with api call.")
+
+
+class LoginSchema(RegistrationSchema):
+    pass

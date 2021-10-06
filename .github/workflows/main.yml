@@ -4,6 +4,7 @@ on:
   push:
     branches: [ master ]
 
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -25,3 +26,4 @@ jobs:
         credentials: ${{ secrets.GCP_CREDENTIALS }}
     - name: Test
       run: curl "${{ steps.deploy.outputs.url }}"
+
