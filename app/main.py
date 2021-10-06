@@ -9,6 +9,7 @@ app = FastAPI()
 
 
 def main():
+    print(settings.postgres_password)
     configure(settings.app_env)
 
 
