@@ -36,6 +36,7 @@ def history(c):
     result = c.run(cmd)
     print(result.stdout.splitlines())
 
+
 @task
 def freeze(c):
     """Freeze pip requirements."""

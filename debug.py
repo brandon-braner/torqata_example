@@ -1,7 +1,6 @@
 import uvicorn
+
 from app import main
-
-
 
 if __name__ == '__main__':
     # Used to debug via pycharm configuration. Run a python script here and it will allow for reloading and debugging
