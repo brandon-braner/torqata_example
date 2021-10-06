@@ -1,7 +1,10 @@
+from fastapi import HTTPException
+from starlette.status import HTTP_401_UNAUTHORIZED
+
 from app.modules.user.providers.authentication.auth_provider_interface import IAuthProvider
-from app.modules.user.schemas.user_schemas import UserSchema, RegistrationSchema
+from app.modules.user.schemas.user_schemas import UserSchema, RegistrationSchema, LoginSchema
 from app.providers.db import get_session
-from app.modules.user.models.user import User, generate_api_key
+from app.modules.user.models.user import User, generate_api_key, get_user
 from app.security import hash_password, verify_password
 
 
@@ -27,15 +30,28 @@ class SQLModelAuthProvider(IAuthProvider):
         )
 
         registration_schema = RegistrationSchema(
-            access_token = api_key,
+            access_token=api_key,
             user=user_schema,
             error=False
         )
 
         return registration_schema
 
-    def login(self, username: str, password: str):
-        pass
+    def login(self, username: str, password: str) -> LoginSchema:
+        user = get_user(username)
+
+        if not user:
+            raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+
+        password_is_valid = verify_password(password, user.password)
+
+        if password_is_valid:
+            login_schema = LoginSchema(
+                access_token=user.api_key,
+                user=user
+            )
+            login_schema.user.email = user.username
+            return login_schema
 
     def logout(self):
         pass
