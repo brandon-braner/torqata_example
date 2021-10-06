@@ -12,8 +12,8 @@ def postgres_engine():
     socket_path = settings.socket_path
     instance = settings.cloud_sql_instance_name
 
-    # connection_string = f"postgresql+psycopg2://{user}:{password}@/{db_name}?host={socket_path}/{instance}"
-    connection_string = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}"
+    connection_string = f"postgresql+psycopg2://{user}:{password}@/{db_name}?host={socket_path}/{instance}"
+    # connection_string = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}"
 
     return create_engine(connection_string)
 
