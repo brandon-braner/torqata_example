@@ -1,3 +1,4 @@
+import enum
 import os
 import pathlib
 from functools import lru_cache
@@ -35,3 +36,8 @@ def get_settings():
 
 
 settings = get_settings()
+
+
+class AppEnvironments(enum.Enum):
+    prod = 'PROD'
+    local = 'LOCAL'
