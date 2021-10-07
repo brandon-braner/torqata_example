@@ -17,7 +17,7 @@ def postgres_engine():
     # connection string for local
     connection_string = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}"
 
-    if settings.app_env == AppEnvironments.prod:
+    if settings.app_env == AppEnvironments.prod.value:
         connection_string = f"postgresql+psycopg2://{user}:{password}@/{db_name}?host={socket_path}/{instance}"
 
     return create_engine(connection_string)
