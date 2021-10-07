@@ -14,6 +14,7 @@ base_path = pathlib.Path(__file__).parent.parent.resolve()
 class Settings(BaseSettings):
     app_name: str = "Torgata API"
     app_domain: str = os.environ.get('APP_DOMAIN')
+    api_domain: str = os.environ.get('API_DOMAIN')
     app_env: str = os.environ.get("APP_ENV")
     app_authorization_cookie: str = 'session'
     cookie_secure: bool = False
@@ -28,6 +29,12 @@ class Settings(BaseSettings):
     # cloud sql
     socket_path = "/cloudsql"
     cloud_sql_instance_name = 'torqataexample:us-central1:torqataexample'
+
+    neo4j_protocol: str = os.environ.get("NEO4J_PROTOCOL")
+    neo4j_host: str = os.environ.get("NEO4J_HOST")
+    neo4j_port: str = os.environ.get("NEO4J_PORT")
+    neo4j_user: str = os.environ.get("NEO4J_USER")
+    neo4j_password: str = os.environ.get("NEO4J_PASSWORD")
 
 
 @lru_cache()

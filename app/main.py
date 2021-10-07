@@ -7,6 +7,7 @@ from app.config import settings
 from app.cors import get_cors_domains
 from app.middleware.authentication_middleware import AuthBackend
 from app.modules.user.authentication_controller import router as authentication_router
+from app.modules.movies.movies_controller import router as movies_router
 
 app = FastAPI()
 
@@ -43,6 +44,7 @@ def configure_routes():
 
     # Routes from other routers
     app.include_router(authentication_router)
+    app.include_router(movies_router)
 
 
 if __name__ == "__main__":

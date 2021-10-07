@@ -1,10 +1,13 @@
+from typing import Union
+
 from fastapi import HTTPException
+from sqlmodel import select
 from starlette.status import HTTP_401_UNAUTHORIZED
 
+from app.modules.user.models.user import User, generate_api_key
 from app.modules.user.providers.authentication.auth_provider_interface import IAuthProvider
 from app.modules.user.schemas.user_schemas import UserSchema, RegistrationSchema, LoginSchema
 from app.providers.db import get_session
-from app.modules.user.models.user import User, generate_api_key, get_user
 from app.security import hash_password, verify_password
 
 
@@ -38,7 +41,7 @@ class SQLModelAuthProvider(IAuthProvider):
         return registration_schema
 
     def login(self, username: str, password: str) -> LoginSchema:
-        user = get_user(username)
+        user = self.get_user_by_username(username)
 
         if not user:
             raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
@@ -55,3 +58,17 @@ class SQLModelAuthProvider(IAuthProvider):
 
     def logout(self):
         pass
+
+    def get_user_by_username(self, username: str) -> Union[User, None]:
+        with get_session() as session:
+            stmt = select(User).where(User.username == username)
+            result = session.exec(stmt)
+            user = result.one_or_none()
+            return user
+
+    def get_user(self, access_token: str) -> Union[User, None]:
+        with get_session() as session:
+            stmt = select(User).where(User.api_key == access_token)
+            result = session.exec(stmt)
+            user = result.one_or_none()
+            return user.dict()

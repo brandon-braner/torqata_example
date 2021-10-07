@@ -25,18 +25,18 @@ class AuthBackend(AuthenticationBackend):
         authorization_cookie = await self.get_authorization_cookie(request)
 
         # return a 401 if they are not authenticated
-        if not authorization_header or not authorization_cookie:
+        if not authorization_header and not authorization_cookie:
             raise AuthenticationError('Unable to authenticate user.')
 
         access_token = authorization_header if len(authorization_header) > 0 else authorization_cookie
 
         user = auth_provider.get_user(access_token)
-        if user['status_code'] == 401:
+        if not user:
             # refresh with access token from database(maybe redis)
             raise AuthenticationError('Unable to authenticate user.')
 
         if user:
-            username = user['email'] if user['email'] else user['username']
+            username = user['email'] if user.get('email', None) else user['username']
             return AuthCredentials(["authenticated"]), SimpleUser(username)
 
     async def request_needs_authorization(self, request: Request):
