@@ -1,22 +1,30 @@
-name: flake8 Lint
+name: Deploy to GAE
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ master ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  flake8-lint:
+  deploy:
+    name: Deploying to Google Cloud
     runs-on: ubuntu-latest
-    name: Lint
+
     steps:
-      - name: Check out source repository
-        uses: actions/checkout@v2
-      - name: Set up Python environment
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.9"
-      - name: flake8 Lint
-        uses: py-actions/flake8@v1
-        with:
-          max-line-length: "120"
-          path: "app"
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Deploy to App Engine
+      id: deploy
+      uses: google-github-actions/deploy-appengine@v0.2.0
+      with:
+        deliverables: app.yaml
+        project_id: ${{ secrets.GCP_PROJECT }}
+        credentials: ${{ secrets.GCP_CREDENTIALS }}
+        promote: false
+    - name: Test
+      run: curl "${{ steps.deploy.outputs.url }}"
+
