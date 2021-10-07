@@ -14,3 +14,7 @@ class IAuthProvider(metaclass=ABCMeta):
     @abstractmethod
     def logout(self):
         pass
+
+    @abstractmethod
+    def get_user(self, username: str):
+        pass

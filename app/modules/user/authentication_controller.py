@@ -49,8 +49,3 @@ async def login(request_body: OAuth2PasswordRequestForm = Depends()):
         )
 
     return auth_response
-
-
-@router.get("/user_details")
-async def get_user_details(request: Request):
-    a = 0

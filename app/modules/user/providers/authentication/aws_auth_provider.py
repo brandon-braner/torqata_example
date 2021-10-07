@@ -137,6 +137,8 @@ class AwsAuthenticationProvider(IAuthProvider):
     def get_user(self, access_token: str):
         try:
             user = self._get_user_from_aws(access_token)
+            if user['status_code'] == 401:
+                return None
             return user
         except Exception as e:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Invalid Request")
