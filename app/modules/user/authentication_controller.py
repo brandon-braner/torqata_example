@@ -33,7 +33,7 @@ async def register(request_body: OAuth2PasswordRequestForm = Depends()):
 @router.post(
     "/login",
     response_model=RegistrationSchema,
-    status_code=201,
+    status_code=200,
     responses={401: {'model': ErrorResponseSchema}},
 )
 async def login(request_body: OAuth2PasswordRequestForm = Depends()):

@@ -41,7 +41,7 @@ class SQLModelAuthProvider(IAuthProvider):
         return registration_schema
 
     def login(self, username: str, password: str) -> LoginSchema:
-        user = self.get_user(username)
+        user = self.get_user_by_username(username)
 
         if not user:
             raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
@@ -58,6 +58,13 @@ class SQLModelAuthProvider(IAuthProvider):
 
     def logout(self):
         pass
+
+    def get_user_by_username(self, username: str) -> Union[User, None]:
+        with get_session() as session:
+            stmt = select(User).where(User.username == username)
+            result = session.exec(stmt)
+            user = result.one_or_none()
+            return user
 
     def get_user(self, access_token: str) -> Union[User, None]:
         with get_session() as session:
