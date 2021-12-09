@@ -17,19 +17,14 @@ class SupabaseAuthProvider(IAuthProvider):
     def register(self, username: str, password: str) -> RegistrationSchema:
         try:
             user = self.client.auth.sign_up(email=username, password=password)
-            if user['status_code'] == 200:
-                registration_schema = RegistrationSchema(
+            return RegistrationSchema(
                     access_token=user['access_token'],
                     refresh_token=user['refresh_token'],
                     error=False
-                )
-            else:
-                registration_schema = RegistrationSchema(
+                ) if user['status_code'] == 200 else RegistrationSchema(
                     message="Encountered an error while registering, please try again.",
                     error=True
                 )
-
-            return registration_schema
         except Exception:
             pass
 
@@ -37,9 +32,14 @@ class SupabaseAuthProvider(IAuthProvider):
         try:
             user = self.client.auth.sign_in(email=username, password=password)
 
-            if user['status_code'] == 200:
-                user_details = user['user']
-                login_schema = LoginSchema(
+            if user['status_code'] != 200:
+                return LoginSchema(
+                    error=True,
+                    message='Something went wrong, please try again.'
+                )
+
+            user_details = user['user']
+            return LoginSchema(
                     access_token=user['access_token'],
                     refresh_token=user['refresh_token'],
                     error=False,
@@ -49,14 +49,6 @@ class SupabaseAuthProvider(IAuthProvider):
                         'id': user_details['id']
                     }
                 )
-            else:
-                login_schema = LoginSchema(
-                    error=True,
-                    message='Something went wrong, please try again.'
-                )
-
-            return login_schema
-
         except Exception:
             pass
 
@@ -66,17 +58,14 @@ class SupabaseAuthProvider(IAuthProvider):
     def user_details(self, access_token: str):
         user = self.client.auth.api.get_user(access_token)
         if user['status_code'] == 200:
-            user_schema = UserSchema(
+            return UserSchema(
                 email=user['email'],
                 username=user['email'],
                 id=user['id']
             )
 
-            return user_schema
-
         else:
-            login_schema = LoginSchema(
+            return LoginSchema(
                 error=True,
                 message='Something went wrong, please try again.'
             )
-            return login_schema

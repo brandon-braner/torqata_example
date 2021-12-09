@@ -32,13 +32,11 @@ class SQLModelAuthProvider(IAuthProvider):
             email=username
         )
 
-        registration_schema = RegistrationSchema(
+        return RegistrationSchema(
             access_token=api_key,
             user=user_schema,
             error=False
         )
-
-        return registration_schema
 
     def login(self, username: str, password: str) -> LoginSchema:
         user = self.get_user_by_username(username)
@@ -63,8 +61,7 @@ class SQLModelAuthProvider(IAuthProvider):
         with get_session() as session:
             stmt = select(User).where(User.username == username)
             result = session.exec(stmt)
-            user = result.one_or_none()
-            return user
+            return result.one_or_none()
 
     def get_user(self, access_token: str) -> Union[User, None]:
         with get_session() as session:

@@ -35,9 +35,8 @@ class AuthBackend(AuthenticationBackend):
             # refresh with access token from database(maybe redis)
             raise AuthenticationError('Unable to authenticate user.')
 
-        if user:
-            username = user['email'] if user.get('email', None) else user['username']
-            return AuthCredentials(["authenticated"]), SimpleUser(username)
+        username = user['email'] if user.get('email', None) else user['username']
+        return AuthCredentials(["authenticated"]), SimpleUser(username)
 
     async def request_needs_authorization(self, request: Request):
         """
@@ -53,8 +52,7 @@ class AuthBackend(AuthenticationBackend):
         """Get the authorization_header remove bearer and whatever is left should be auth token."""
         header = request.headers.get('Authorization', None)
         if header:
-            token = header.replace('Bearer', '').strip()
-            return token
+            return header.replace('Bearer', '').strip()
         return None
 
     async def get_authorization_cookie(self, request: Request):

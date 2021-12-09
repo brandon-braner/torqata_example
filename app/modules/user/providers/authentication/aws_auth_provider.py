@@ -40,14 +40,12 @@ class AwsAuthenticationProvider(IAuthProvider):
 
     def get_jwks(self):
         """Get jwks from aws."""
-        jwks = JWKS.parse_obj(
+        return JWKS.parse_obj(
             requests.get(
                 f"https://cognito-idp.{self.cognito_region}.amazonaws.com/"
                 f"{self.pool_id}/.well-known/jwks.json"
             ).json()
         )
-
-        return jwks
 
     def register(self, username: str, password: str) -> RegistrationSchema:
         """Method to register a new user."""
@@ -78,19 +76,17 @@ class AwsAuthenticationProvider(IAuthProvider):
                 email=user.get('email', '')
             )
 
-            registration_schema = RegistrationSchema(
+            return RegistrationSchema(
                 access_token=authentication_result['AccessToken'],
                 refresh_token=authentication_result['RefreshToken'],
                 user=user_schema,
                 error=False
             )
         else:
-            registration_schema = RegistrationSchema(
+            return RegistrationSchema(
                 message="Encountered an error while registering, please try again.",
                 error=True
             )
-
-        return registration_schema
 
     def login(self, username: str, password: str) -> RegistrationSchema:
         """
@@ -118,18 +114,17 @@ class AwsAuthenticationProvider(IAuthProvider):
                     email=user_details.get('email', ''),
                     id=user_details.get('id', '')
                 )
-                login_schema = RegistrationSchema(
+                return RegistrationSchema(
                     access_token=authentication_result['AccessToken'],
                     refresh_token=authentication_result['RefreshToken'],
                     error=False,
                     user=user_schema
                 )
             else:
-                login_schema = RegistrationSchema(
+                return RegistrationSchema(
                     error=True,
                     message='Something went wrong, please try again.'
                 )
-            return login_schema
         except:
             # TODO handle exception
             pass
@@ -167,9 +162,6 @@ class AwsAuthenticationProvider(IAuthProvider):
         except Exception as e:
             raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="JWK invalid")
 
-            data = 'Username or password are incorrect. Please try again.'
-            return {'data': data, 'error': True}
-
     def logout(self):
         pass
 
@@ -190,7 +182,7 @@ class AwsAuthenticationProvider(IAuthProvider):
             )
         except Exception as e:
             raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Username or password invalid.")
-        response = dict()
+        response = {}
         # Take user attributes and map them to return to application
         for attribute in user['UserAttributes']:
             if attribute['Name'] in self.user_attributes:
