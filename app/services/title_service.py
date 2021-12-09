@@ -17,5 +17,4 @@ class TitleService:
         movies = self.graphdb.nodes.match(self.node_type, title_type="Movie").limit(limit).order_by(order_by)
         if skip > 0:
             movies.skip(skip)
-        result = movies.all()
-        return result
+        return movies.all()
